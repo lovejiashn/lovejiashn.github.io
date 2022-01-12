@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>security | jiashn技术栈</title>
-  <meta name="keywords" content=" SpringSecurity , SpringBoot ">
-  <meta name="description" content="security | jiashn技术栈">
+  <title>Java线程池面试要点 | jiashn技术栈</title>
+  <meta name="keywords" content=" 线程池 ">
+  <meta name="description" content="Java线程池面试要点 | jiashn技术栈">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="Java线程池在面试的时候问的挺多的，曾经我就在面试过程中两次被问到，面试官通过面试者对线程池的理解回答也能大致了解到面试者的实际开发经验如何，以及对多线程的理解运用有没有深入到位。 同时，面试官在切入多线程问题的时候通常也不会太过生硬，而是一步一步通过线程创建方式、线程状态切换、线程协同引导过来，整体谈下来其实也挺花时间的，会触及到多线程的方方面面，但对开发者素质确实也是一番不小的考验，今天我">
 <meta property="og:type" content="article">
@@ -311,9 +311,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-SpringSecurity/security" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-线程池/Java线程池面试要点" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">security</h1>
+        <h1 class="article-title">Java线程池面试要点</h1>
     
     <div class="article-meta">
         
@@ -323,7 +323,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="SpringSecurity">SpringSecurity</a>
+            <a  data-rel="线程池">线程池</a>
             
         </span>
         
@@ -331,16 +331,14 @@
         <span class="tag">
             <i class="iconfont icon-tag"></i>
             
-            <a class="color5">SpringSecurity</a>
-            
-            <a class="color1">SpringBoot</a>
+            <a class="color4">线程池</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            发布时间 : <time class="date" title='最后更新: 2022-01-05 16:28:53'>2022-01-05 16:08</time>
+            发布时间 : <time class="date" title='最后更新: 2022-01-12 11:09:57'>2022-01-12 10:32</time>
         
     </div>
     <div class="article-meta">
@@ -362,7 +360,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#security"><span class="toc-text">security</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ThreadPoolExecutor%E5%8F%82%E6%95%B0%E5%90%AB%E4%B9%89"><span class="toc-text">ThreadPoolExecutor参数含义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9A%84%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84"><span class="toc-text">线程池线程创建的流程是怎样的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%88%97%E9%98%9F%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%E5%AE%9E%E7%8E%B0"><span class="toc-text">工作列队有哪几种实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D"><span class="toc-text">拒绝策略有哪几种</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">线程池的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-text">如何关闭线程池</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -378,7 +376,89 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="security"><a href="#security" class="headerlink" title="security"></a>security</h3>
+        <br />
+<br />Java线程池在面试的时候问的挺多的，曾经我就在面试过程中两次被问到，面试官通过面试者对线程池的理解回答也能大致了解到面试者的实际开发经验如何，以及对多线程的理解运用有没有深入到位。<br />
+<br />同时，面试官在切入多线程问题的时候通常也不会太过生硬，而是一步一步通过线程创建方式、线程状态切换、线程协同引导过来，整体谈下来其实也挺花时间的，会触及到多线程的方方面面，但对开发者素质确实也是一番不小的考验，今天我们也不完全铺开去描述，就仅仅针对线程池这一点来聊聊面试的时候会碰到的一些问题。<br />
+
+<p><a name="bn4Ls"></a></p>
+<h2 id="ThreadPoolExecutor参数含义"><a href="#ThreadPoolExecutor参数含义" class="headerlink" title="ThreadPoolExecutor参数含义"></a>ThreadPoolExecutor参数含义</h2><p>ThreadPoolExecutor 构造函数参数定义我们可以直接在 concurrent 包当中找到。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,</span></span></span><br><span class="line"><span class="params"><span class="function">						 <span class="keyword">int</span> maximumPoolSize,</span></span></span><br><span class="line"><span class="params"><span class="function">						 <span class="keyword">long</span> keepAliveTime,</span></span></span><br><span class="line"><span class="params"><span class="function">						 TimeUnit unit,</span></span></span><br><span class="line"><span class="params"><span class="function">						 BlockingQueue workQueue,</span></span></span><br><span class="line"><span class="params"><span class="function">						 ThreadFactory threadFactory,</span></span></span><br><span class="line"><span class="params"><span class="function">						 RejectedExecutionHandler handler)</span> </span>&#123;  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><br />这几个核心参数的含义分别是：<br /></p>
+<ol>
+<li> corePoolSize：线程池核心线程数量，核心线程不会被回收，即使没有任务执行，也会保持空闲状态，设置 allowCoreThreadTimeOut 参数为 true 才会进行回收。如果线程池中的线程少于此数目，则在执行任务时创建。 </li>
+<li> maximumPoolSize：线程池最大线程数，表示在线程池中最多能创建多少个线程。<strong>当线程数量达到corePoolSize，且workQueue队列塞满任务了之后，继续创建线程</strong>，当线程池中的线程数量到达这个数字时，新来的任务会执行拒绝策略。 </li>
+<li> keepAliveTime：表示线程没有任务执行时最多能保持多少时间会被回收，注意，这个参数控制的是超过corePoolSize之后的“临时线程”的存活时间。 </li>
+<li> unit：参数 keepAliveTime 的时间单位。 </li>
+<li> workQueue：工作队列，存放提交的等待任务，其中有队列大小的限制。 </li>
+<li> threadFactory：创建线程的工厂类，通常我们会自定义一个threadFactory设置线程的名称，这样我们就可以知道线程是由哪个工厂类创建的，可以快速定位排查问题。 </li>
+<li> handler：如果线程池已满，新的任务进来时的拒绝策略。 </li>
+</ol>
+<p><br />ThreadPoolExecutor 参数含义是最常见的一个问题，如果面试者对这些参数比较了解，至少说明面试者在多线程运用层面不会存在太大的问题，反之，如果面试官提示某个参数后面试者还是一脸懵的话，那么基础印象分就会大打折扣。<br /></p>
+<p><a name="UfHQs"></a></p>
+<h2 id="线程池线程创建的流程是怎样的"><a href="#线程池线程创建的流程是怎样的" class="headerlink" title="线程池线程创建的流程是怎样的"></a>线程池线程创建的流程是怎样的</h2><p><br />线程池线程创建的时机可以用下面这张图简单表示。<br /><br><br /><img src="C509BFF2-EC8B-4bdc-8408-FB7C2314357C.png"><br /><br><br />线程创建流程是这样的：<br /></p>
+<ol>
+<li> 如果当前运行的线程少于corePoolSize(核心线程数)，则创建新线程来执行任务（执行这一步骤需要获取全局锁）。 </li>
+<li> 如果运行的线程等于或多于corePoolSize，则将任务加入BlockingQueue(阻塞队列/任务队列)。 </li>
+<li> 如果无法将任务加入BlockingQueue（队列已满），则在非corePool中创建新的线程来处理任务（执行这一步骤也需要获取全局锁）。 </li>
+<li> 如果创建新线程将使得当前运行的线程超出maximumPoolSize限制，任务将被拒绝，并执行线程饱和策略，如：RejectedExecutionHandler.rejectedExecution()方法。 </li>
+</ol>
+<p><br />注意：初始化线程池时，线程数为0。<br /></p>
+<p><a name="L8ZaJ"></a></p>
+<h2 id="工作列队有哪几种实现"><a href="#工作列队有哪几种实现" class="headerlink" title="工作列队有哪几种实现"></a>工作列队有哪几种实现</h2><p><br />存放任务的工作队列有6种主要的实现，分别是 ArrayBlockingQueue、LinkedBlockingQueue、LinkedBlockingDeque、PriorityBlockingQueue、DelayQueue、SynchronousQueue。它们的区别如下：<br /></p>
+<ol>
+<li> ArrayBlockingQueue：一个由数组结构组成的有界阻塞队列(数组结构可配合指针实现一个环形队列)。 </li>
+<li> LinkedBlockingQueue：一个由链表结构组成的有界阻塞队列，在未指明容量时，<strong>容量默认为 Integer.MAX_VALUE</strong>。 </li>
+<li> LinkedBlockingDeque：使用双向队列实现的双端阻塞队列，双端意味着可以像普通队列一样 FIFO(先进先出)，可以以像栈一样 FILO(先进后出) </li>
+<li> PriorityBlockingQueue：一个支持优先级排序的无界阻塞队列，对元素没有要求，可以实现 Comparable 接口也可以提供 Comparator 来对队列中的元素进行比较，跟时间没有任何关系，仅仅是按照优先级取任务。 </li>
+<li> DelayQueue：同 PriorityBlockingQueue，也是二叉堆实现的优先级阻塞队列。要求元素都实现 Delayed 接口，通过执行时延从队列中提取任务，时间没到任务取不出来。 </li>
+<li> SynchronousQueue：一个不存储元素的阻塞队列，消费者线程调用 take() 方法的时候就会发生阻塞，直到有一个生产者线程生产了一个元素，消费者线程就可以拿到这个元素并返回；生产者线程调用put()方法的时候就会发生阻塞，直到有一个消费者线程消费了一个元素，生产者才会返回。 </li>
+</ol>
+<p><a name="r6shP"></a></p>
+<h2 id="拒绝策略有哪几种"><a href="#拒绝策略有哪几种" class="headerlink" title="拒绝策略有哪几种"></a>拒绝策略有哪几种</h2><p><br />线程池中的线程已经用完了，无法继续为新任务服务，同时，等待队列也已经排满了，再也塞不下新任务了。这时候我们就需要拒绝策略机制合理地处理新进来的任务。JDK 内置的四种拒绝策略如下：<br /></p>
+<ol>
+<li> AbortPolicy（默认）：丢弃任务并抛出 RejectedExecutionException 异常。 </li>
+<li> CallerRunsPolicy：由调用线程处理该任务。(例如io操作，线程消费速度没有NIO快，可能导致阻塞队列一直增加，此时可以使用这个模式)。 </li>
+<li> DiscardPolicy：丢弃任务，但是不抛出异常。（可以配合这种模式进行自定义的处理方式）。 </li>
+<li> DiscardOldestPolicy：丢弃队列最早的未处理任务，然后重新尝试执行任务。 </li>
+</ol>
+<p><a name="lhRaT"></a></p>
+<h2 id="线程池的分类"><a href="#线程池的分类" class="headerlink" title="线程池的分类"></a>线程池的分类</h2><p><br />Java 里面线程池的顶级接口是 Executor，但是严格意义上讲 Executor 并不是一个线程池，而只是一个执行线程的工具，真正的线程池接口是  ExecutorService。Java中 Executors 工厂类可以为我们自动创建不同策略配置的线程池，供我们直接使用。<br /><br><br /><strong>▐</strong> <strong>newCachedThreadPool</strong><br /><br><br />coreSize 线程数0，最大线程数无限制，线程的允许空闲时间是60s，阻塞队列是 SynchronousQueue。适用于“短任务”情况。由于采用SynchronousQueue，每当提交一个任务，都会超过阻塞队列的长度，导致创建新线程处理，所以说：<strong>每当提交一个任务，都会创建一个线程，可能造成OOM。</strong> 此外，线程空闲1分钟就会销毁，所以该线程池可能会频繁地创建和销毁线程。<br /><br><br /><strong>▐</strong> <strong>newFixedThreadPool</strong><br /><br><br />coreSize 和最大线程数都是用户输入的，阻塞队列用的 LinkedBlockingQueue，线程的允许空闲时间是0s。其核心特性就是线程数不会增加，不会减少，线程池也不会自己销毁。由于阻塞队列是无限大的，不会执行拒绝策略。所以可能会堆积无限的请求，导致OOM。<br /><br><br /><strong>▐</strong> <strong>newSingleThreadExecutor</strong><br /><br><br />相当于线程数为1的 newFixedThreadPool，缺点和 newFixedThreadPool 一样。有的小伙伴可能会问，那它和单个线程有什么区别？</p>
+<table>
+<thead>
+<tr>
+<th>newSingleThreadExecutor</th>
+<th>Thread</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务执行完成后，不会自动销毁，可以复用</td>
+<td>任务执行完成后，会自动销毁</td>
+</tr>
+<tr>
+<td>可以将任务存储在阻塞队列中，逐个执行</td>
+<td>无法存储任务，只能执行一个任务</td>
+</tr>
+</tbody></table>
+<p><strong>▐</strong> <strong>newScheduledThreadPool</strong><br /><br><br />支持定时及周期性任务执行，需要注意的是，如果任务执行过程中抛出了异常就会停止执行任务，而且也不会再周期地执行该任务了。所以如果想保持任务周期执行，需要 catch 一切可能的异常。<br /><br><br /><strong>▐</strong> <strong>newWorkStealingPool</strong><br /><br><br />采用的 ForkJoin 框架，可以将任务进行分割，同时线程之间会互相帮助。另外，阻塞队列采用的 LinkedBlockingDeque，可以进行任务窃取。由于实际使用不多，这里只作了解。<br /><br><br />实际使用时并不推荐这样去直接创建使用，阿里Java开发规约里面也有相应约束：<br /></p>
+<blockquote>
+<p>【强制】线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。说明：Executors 返回的线程池对象的弊端如下：</p>
+</blockquote>
+<blockquote>
+<p>1）FixedThreadPool 和 SingleThreadPool: 允许的请求队列长度为 Integer.MAX_VALUE，可能会堆积大量的请求，从而导致 OOM。</p>
+</blockquote>
+<blockquote>
+<p>2）CachedThreadPool 和 ScheduledThreadPool: 允许的创建线程数量为 Integer.MAX_VALUE，可能会创建大量的线程，从而导致 OOM。</p>
+</blockquote>
+<p><a name="rNJ27"></a></p>
+<h2 id="如何关闭线程池"><a href="#如何关闭线程池" class="headerlink" title="如何关闭线程池"></a>如何关闭线程池</h2><p><br /><strong>▐</strong> <strong>shutdown（高安全低响应）</strong><br /><br><br />本质上执行的是 interrupt 方法，阻止新来的任务提交，会将线程池的状态改成 SHUTDOWN，当再执行 execute 提交任务时，如果测试到状态不为 RUNNING，则执行拒绝策略，从而达到阻止新任务提交的目的。对于已经提交的任务不会产生任何影响，当已经提交的任务执行完以后，它会将那些闲置的线程进行中断，这个过程是异步的，也就是说只会打断空闲线程，如果当前还有任务队列还有任务未执行，线程将继续把任务执行完。<br /><br><br /><strong>▐</strong> <strong>shutdownNow（低安全高响应）</strong><br /><br><br />将阻止新来的任务提交，同时将线程池的状态改成 STOP，当再执行 execute 提交任务时，如果测试到状态不为 RUNNING，则抛出 rejectedExecution，从而达到阻止新任务提交的目的。该方法会中断空闲进程，同时也会中断当前正在运行的线程，即 workers 中的线程。如果遇到已经激活的任务，并且处于阻塞状态时，shutdownNow() 会执行1次中断阻塞的操作，此时对应的线程报 InterruptedException，如果后续还要等待某个资源，则按正常逻辑等待某个资源的到达。例如，一个线程正在 sleep 状态中，此时执行 shutdownNow()，它向该线程发起 interrupt() 请求，而 sleep() 方法遇到有 interrupt() 请求时，会抛出 InterruptedException()，并继续往下执行。在这里要提醒注意的是，在激活的任务中，如果有多个 sleep(),该方法只会中断第一个sleep()，而后面的仍然按照正常的执行逻辑进行。<br /><br><br />两张关闭线程池的方式的主要区别用一句话概括就是：<strong>高安全低响应</strong>体现在 shutdown 等待任务执行完成再关闭，可以保证任务一定被执行，但是关闭线程池需要等待较长的时间；<strong>低安全高响应</strong>体现在 shutdownNow 会关闭正在执行任务的线程，任务可能并没有执行完毕，也不会回退到任务队列中，将会消失，但是关闭线程池不需要等待较长的时间。<br /><br><br />线程池核心线程数经验配置<br /><br><br />CPU密集型任务：尽量压榨CPU，参考值设置为CPU的个数+1。<br /><br><br />IO密集型任务：参考值可以设置为CPU的个数 ✖️ 2。<br /><br><br />以上只是经验配置参考，具体的使用配置如果在条件允许的情况下最好使用公司的压测工具或环境压测一下。<br /><br><br />使用线程池有什么好处<br /></p>
+<ol>
+<li> <strong>线程重用</strong>：线程的创建和销毁开销是巨大的，而通过线程池的重用大大减少了这些不必要的开销，当然既然少了这么多开销，其线程执行速度也是突飞猛进的提升。 </li>
+<li> <strong>控制线程池的并发数</strong>：线程不是并发的越多，性能越高，反而在线程并发太多时，线程的切换会消耗系统大量的资源，可以通过设置线程池最大并发线程数目，维持系统高性能。 </li>
+<li> <strong>线程池可以对线程进行管理</strong>：虽然线程提供了线程组操控线程，但是线程池拥有更多管理线程的API。 </li>
+<li> <strong>可以储存需要执行的任务</strong>：当任务提交过多时，可以将任务储存起来，等待线程处理。 </li>
+</ol>
+
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 421582841@qq.com </span>
     </div>
